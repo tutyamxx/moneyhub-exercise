@@ -23,7 +23,7 @@ server.get('/users/:userId/transactions', async (req, res) =>
   // --| If token is not valid return a 401
   if(!accessToken) return res.status(401).send({ message: "Unsuccesful Response - Not authorised - Missing authorization header - Invalid access Token" });
 
-  return res.status(200).send({ data: await getUserTransactions(id, accessToken )});
+  return res.status(200).send({ data: await getUserTransactions(id, accessToken) });
 });
 
 // --| Function to get a token from the bank

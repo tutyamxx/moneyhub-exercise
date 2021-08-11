@@ -37,19 +37,6 @@ describe("Testing API Endpoint Responses:", () =>
                 done();
             });
         });
-
-        it("Should return an object that contains an array of objects with user's transactions and a status code of OK (200)", (done) =>
-        {
-            chai.request(app).get("/users/60f9727e58ee30009a1bf7ea/transactions").end((err, response) =>
-            {
-                expect(response).to.have.status(200);
-                expect(response.body).to.be.a("object");
-                expect(Object.keys(response.body).length).to.be.equal(1);
-                expect(response.body).to.have.property("data").which.is.an("array");
-
-                done();
-            });
-        });
     });
 
     after(() => chai.request(app).close());
