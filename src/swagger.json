@@ -1,0 +1,119 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Example Banking Integration",
+    "title": "Example Banking Integration",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3002",
+  "basePath": "/api",
+  "schemes": ["https"],
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "Bearer": []
+    }
+  ],
+  "paths": {
+    "/users/{userId}/transactions": {
+      "get": {
+        "summary": "Get transactions for a user",
+        "description": "Connects to a bank and retrieves your bank account transactions",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "description": "The ID of the user the transactions belong to",
+            "required": true,
+            "in": "path",
+            "name": "userId",
+            "type": "string",
+            "x-example": "60f9727e58ee30009a1bf7ea"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succesful Transactions Response",
+            "schema": {
+              "properties": {
+                "data": {
+                  "items": {
+                    "$ref": "#/definitions/Transactions"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unsuccesful Response - Not authorised - Missing authorization header - Invalid access Token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "Unsuccesful Response - Forbidden - Invalid scopes",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "tags": ["accounts"]
+      }
+    }
+  },
+  "definitions": {
+    "Transactions": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The transaction ID",
+          "example": "c83f307c-7c67-44b1-a277-1bb533cdaf5c"
+        },
+        "accountId": {
+          "type": "string",
+          "description": "The ID of the account the transaction belongs to",
+          "example": "8066de10-79c6-495a-9f6b-3b1a5eb0b023"
+        },
+        "amount": {
+          "type": "number",
+          "description": "The amount of the transaction in minor units of the currency, eg. pennies for GBP, negative means money going out of an account, positive means money coming into an account.",
+          "example": 799
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the transaction occured, for Open Banking transactions, this will be the BookingDateTime",
+          "example": "2021-09-04T23:00:00.000Z"
+        },
+        "description": {
+          "type": "string",
+          "description": "Transaction information, usually correlates with what shows in bank statements",
+          "example": "Netflix subscription"
+        },
+        "status": {
+          "type": "string",
+          "description": "Whether the transaction has been posted (booked) or is still a pending transaction. During the transition from pending to posted the description will normally change.",
+          "enum": ["posted", "pending"]
+        }
+      },
+      "required": ["accountId", "amount", "date", "id", "description", "status"]
+    },
+    "Error": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "error message"
+        }
+      }
+    }
+  }
+}
